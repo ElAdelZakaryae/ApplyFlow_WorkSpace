@@ -1,0 +1,8 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    { "name": "ApplyFlow", "request": "launch", "type": "dart" },
+    { "name": "ApplyFlow (profile)", "request": "launch", "type": "dart", "flutterMode": "profile" },
+    { "name": "ApplyFlow (release)", "request": "launch", "type": "dart", "flutterMode": "release" }
+  ]
+}
