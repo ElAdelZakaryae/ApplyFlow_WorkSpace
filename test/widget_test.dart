@@ -1,30 +1,44 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:applyflow/app/app.dart';
+import 'package:applyflow/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:applyflow/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets(
+    'Splash renders on compact and large screens with accessible text',
+    (tester) async {
+      for (final size in [
+        const Size(320, 568),
+        const Size(430, 932),
+        const Size(932, 430),
+      ]) {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1;
+        await tester.pumpWidget(const ApplyFlowApp());
+        await tester.pump(const Duration(milliseconds: 700));
+        expect(find.text('ApplyFlow'), findsOneWidget);
+        expect(find.byType(Image), findsNWidgets(2));
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+      }
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    },
+  );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Splash supports reduced motion and large text', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: MediaQuery(
+          data: MediaQueryData(
+            disableAnimations: true,
+            textScaler: TextScaler.linear(2),
+          ),
+          child: SplashPage(),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 2));
+    expect(tester.takeException(), isNull);
   });
 }
